@@ -17,8 +17,7 @@ class DatabaseSeeder extends Seeder
             BisnisUnitSeeder::class,
             DepartemenSeeder::class,
             JabatanSeeder::class,
-            EmployeeSeeder::class,
-            ApprovalLineSeeder::class
+            EmployeeSeeder::class
         ]);
         // User::factory(10)->create();
 

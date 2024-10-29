@@ -1,5 +1,5 @@
 
-<div class="grid {{ $loggedUser->role == "Superadmin" || $loggedUser->role == "HR Unit" ? 'grid-cols-3' : 'grid-cols-2' }} mx-auto gap-6 justify-items-center bg-white">
+<div class="grid {{ $loggedUser->role == "Superadmin" || $loggedUser->role == "HR" ? 'grid-cols-3' : 'grid-cols-2' }} mx-auto gap-6 justify-items-center bg-white">
     @if($loggedUser->role == "Superadmin")
         
         {{-- FPK Menu --}}
@@ -44,7 +44,7 @@
                 Company Data
         </x-card-menu>
 
-    @elseif($loggedUser->role == "HR Unit")
+    @elseif($loggedUser->role == "HR")
         {{-- FPK Menu --}}
         <x-card-menu>
             <x-slot:url>#</x-slot>

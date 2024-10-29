@@ -2,10 +2,13 @@
 
 namespace App\Livewire\Employee;
 
+use App\Actions\Fortify\CreateNewUser;
 use App\Models\BisnisUnit as ModelsBisnisUnit;
 use App\Models\Departemen as ModelsDepartemen;
 use App\Models\Jabatan as ModelsJabatan;
 use App\Models\Employee as ModelsEmployee;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -16,14 +19,11 @@ class EmployeeMain extends Component
     public $deleteModal = false;
     public $formModal = false;
     public $cursorId = null;
-    public $employee_name = null;
-    public $golongan = null;
-    public $status = null;
-    public $tanggal_bergabung = null;
-    
+    public $employee_name = "", $golongan = "", $status = "", $tanggal_bergabung = null, $email = "", $acc_role = "";
     public $bisnis_unit_id = "";
     public $departemen_id = "";
     public $jabatan_id = "";
+    public $user_id = "";
     public $bu = [], $d = [], $j = [];
 
     protected $rules = [
@@ -31,7 +31,9 @@ class EmployeeMain extends Component
         'jabatan_id' => ['required', 'exists:jabatans,id'],
         'golongan' => ['required',"regex:'0[1-6]|24|25'"],
         'status' => ['required', 'in:Kontrak,Bulan'],
-        'tanggal_bergabung' => ['required','date']
+        'tanggal_bergabung' => ['required','date'],
+        'email' => ['required', 'unique:users'],
+        'acc_role' => ['required', 'in:Superadmin,HR,Employee']
     ];
     
     public function mount(){
@@ -60,6 +62,7 @@ class EmployeeMain extends Component
 
     public function openFormModalForAdd() {
         $this->cursorId = null;
+        $this->user_id = null;
         $this->employee_name = null;
         $this->golongan = null;
         $this->status = null;
@@ -67,10 +70,14 @@ class EmployeeMain extends Component
         $this->bisnis_unit_id = "";
         $this->departemen_id = "";
         $this->jabatan_id = "";
+        $this->email = "";
+        $this->acc_role = "";
         $this->formModal = true;
     }
 
     public function openFormModalForEdit(ModelsEmployee $EModel) {
+        $this->cursorId = $EModel->id;
+        $this->user_id = $EModel->user->id;
         $this->employee_name = $EModel->employee_name;
         $this->golongan = $EModel->golongan;
         $this->status = $EModel->status;
@@ -80,7 +87,8 @@ class EmployeeMain extends Component
         $this->departemen_id = $EModel->jabatan->departemen->id;
         $this->j = ModelsJabatan::where('departemen_id',$this->departemen_id)->get();
         $this->jabatan_id = $EModel->jabatan->id;
-        $this->cursorId = $EModel->id;
+        $this->email = $EModel->user->email;
+        $this->acc_role = $EModel->user->role;
         $this->formModal = true;
     }
 
@@ -100,20 +108,33 @@ class EmployeeMain extends Component
         $this->validate();
         if(isset($this->cursorId)){
             $e = ModelsEmployee::find($this->cursorId);
+            $u = User::find($e->id);
             $e->employee_name = $this->employee_name;
             $e->jabatan_id = $this->jabatan_id;
             $e->golongan = $this->golongan;
             $e->status = $this->status;
             $e->tanggal_bergabung = $this->tanggal_bergabung;
+            $u->name = $this->employee_name;
+            $u->role = $this->acc_role;
+            $u->email = $this->email;
             $e->save();
+            $u->save();
         }
         else{
-            ModelsEmployee::create([
+            $e = ModelsEmployee::create([
                 'employee_name' => $this->employee_name,
                 'jabatan_id' => $this->jabatan_id,
                 'golongan' => $this->golongan,
                 'status' => $this->status,
                 'tanggal_bergabung' => $this->tanggal_bergabung
+            ]);
+
+            User::create([
+                'name' => $this->employee_name,
+                'email' => $this->email,
+                'password' => Hash::make($this->employee_name),
+                'role' => $this->acc_role,
+                'employee_id' => $e->id
             ]);
         }
         $this->formModal = false;

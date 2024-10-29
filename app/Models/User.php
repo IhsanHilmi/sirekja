@@ -64,6 +64,14 @@ class User extends Authenticatable
         ];
     }
 
+    public function approvalLines() {
+        return $this->belongsToMany(ApprovalLine::class, 'approval_line_user')->withPivot('order');
+    }
+
+    public function approvalSteps() {
+        return $this->hasMany(ApprovalStep::class);
+    }
+
     public function employee()
     {
         return $this->belongsTo(Employee::class);

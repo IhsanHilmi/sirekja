@@ -11,6 +11,7 @@
                 <tr>
                     <th class="w-1/12 py-3 px-4 text-center">No.</th>
                     <th class="w-auto py-3 px-4 text-center">Nama</th>
+                    <th class="w-1/12 py-3 px-4 text-center">Email</th>
                     <th class="w-1/12 py-3 px-4 text-center">Status</th>
                     <th class="w-auto py-3 px-4 text-center">Jabatan</th>
                     <th class="w-1/12 py-3 px-4 text-center">Golongan</th>
@@ -25,6 +26,7 @@
                     <tr class="border-b border-gray-200 hover:bg-gray-300" wire:key='{{$employee->id}}'>
                         <td class="py-3 px-4">{{ $loop->iteration }}</td>
                         <td class="py-3 px-4">{{ $employee->employee_name }}</td>
+                        <td class="py-3 px-4">{{ $employee->user->email }}</td>
                         <td class="py-3 px-4">{{ $employee->status }}</td>
                         <td class="py-3 px-4">{{ $employee->jabatan->nama_jabatan }}</td>
                         <td class="py-3 px-4">{{ $employee->golongan }}</td>
@@ -76,6 +78,11 @@
                 <x-input-error for="employee_name" class="mt-2" />
             </div>
             <div class="mt-4">
+                <x-label for="email" value="{{ __('Email') }}" />
+                <x-input id="email" class="block mt-1 w-full" type="email" name="email" wire:model="email" required />
+                <x-input-error for="email" class="mt-2" />
+            </div>
+            <div class="mt-4">
                 <x-label for="bisnis_unit_id" value="{{ __('Bisnis Unit Asal') }}" />
                 <select id="bisnis_unit_id" name="bisnis_unit_id" wire:model.change="bisnis_unit_id" wire:change='mountDepartemens' required class="block mt-1 w-full mb-4 border-gray-700 bg-gray-200 text-gray-900 focus:border-indigo-600 focus:ring-indigo-600 rounded-md shadow-sm">
                     <option value="">Bisnis Unit yang tersedia</option>
@@ -120,10 +127,21 @@
                 <x-input-error for="status" class="mt-2" />
             </div>
             <div class="mt-4">
+                <x-label for="acc_role" value="{{ __('Role') }}" />
+                <select id="acc_role" name="acc_role" wire:model.change="acc_role" required class="block mt-1 w-full mb-4 border-gray-700 bg-gray-200 text-gray-900 focus:border-indigo-600 focus:ring-indigo-600 rounded-md shadow-sm">
+                    <option value="">Role untuk User</option>
+                    <option value="Superadmin">Superadmin</option>
+                    <option value="HR">HR Unit</option>
+                    <option value="Employee">Employee</option>
+                </select>
+                <x-input-error for="acc_role" class="mt-2" />
+            </div>
+            <div class="mt-4">
                 <x-label for="tanggal_bergabung" value="{{ __('Tanggal Bergabung') }}" />
                 <x-input id="tanggal_bergabung" class="block mt-1 w-full" type="date" name="tanggal_bergabung" wire:model.change="tanggal_bergabung" required class="block mt-1 w-full mb-4 border-gray-700 bg-gray-200 text-gray-900 focus:border-indigo-600 focus:ring-indigo-600 rounded-md shadow-sm"/>
                 <x-input-error for="tanggal_bergabung" class="mt-2" />
             </div>
+            
         </x-slot>
 
         <x-slot name="footer">

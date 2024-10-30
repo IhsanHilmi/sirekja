@@ -57,7 +57,7 @@ class EmployeeMain extends Component
 
     public function render()
     {
-        return view('livewire.employee.employee-main', ['allEmployee' => ModelsEmployee::with('jabatan')->paginate(25)]);
+        return view('livewire.employee.employee-main', ['allEmployee' => ModelsEmployee::with('jabatan','user')->paginate(25)]);
     }
 
     public function openFormModalForAdd() {
@@ -121,6 +121,7 @@ class EmployeeMain extends Component
             $u->save();
         }
         else{
+            
             $e = ModelsEmployee::create([
                 'employee_name' => $this->employee_name,
                 'jabatan_id' => $this->jabatan_id,
@@ -128,7 +129,7 @@ class EmployeeMain extends Component
                 'status' => $this->status,
                 'tanggal_bergabung' => $this->tanggal_bergabung
             ]);
-
+            
             User::create([
                 'name' => $this->employee_name,
                 'email' => $this->email,

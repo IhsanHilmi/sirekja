@@ -15,16 +15,20 @@ return new class extends Migration
         Schema::create('fpk_details', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Fpk::class)->constrained()->onDelete('cascade');
-            $table->enum('gender', ['Laki - laki', 'Perempuan']);
+            $table->enum('golongan',['01','02','03','04','05','06','24','25']);
+            $table->enum('gender', ['Laki - laki', 'Perempuan','Keduanya']);
             $table->integer('usia');
             $table->string('thn_pengalaman');
-            $table->string('pendidikan');
+            $table->enum('pendidikan',['SMA/SMK/MA', 'DIII', 'S1', 'S2']);
             $table->string('jurusan');
             $table->string('lokasi_kerja');
-            $table->text('uraian');
-            $table->text('spesifikasi');
-            $table->text('soft_skill');
-            $table->integer('revisi');
+            $table->longText('alasan');
+            $table->longText('spesifikasi');
+            $table->longText('deskripsi');
+            $table->longText('hard_skills')->nullable();
+            $table->longText('soft_skills')->nullable();
+            $table->text('catatan');
+            $table->integer('revisi')->default(0);
             $table->timestamps();
         });
     }

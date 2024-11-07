@@ -15,18 +15,27 @@
                     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link href="{{ route('company') }}" :active="request()->routeIs('company')">
-                        {{ __('Company') }}
-                    </x-nav-link>
-                    <x-nav-link href="{{ route('employee') }}" :active="request()->routeIs('employee') || request()->is('employee/*')">
-                        {{ __('Employee') }}
-                    </x-nav-link>
-                    <x-nav-link href="{{ route('approval line') }}" :active="request()->routeIs('approval line') || request()->is('approval-line/*')">
-                        {{ __('Approval Line') }}
-                    </x-nav-link>
-                    <x-nav-link href="{{ route('FPK Main') }}" :active="request()->routeIs('FPK Main') || request()->is('FPK/*')">
-                        {{ __(' F P K ') }}
-                    </x-nav-link>
+
+                    @if (auth()->user()->role === 'Superadmin')
+                        <x-nav-link href="{{ route('company') }}" :active="request()->routeIs('company')">
+                            {{ __('Company') }}
+                        </x-nav-link>
+                        <x-nav-link href="{{ route('employee') }}" :active="request()->routeIs('employee') || request()->is('employee/*')">
+                            {{ __('Employee') }}
+                        </x-nav-link>
+                        <x-nav-link href="{{ route('approval line') }}" :active="request()->routeIs('approval line') || request()->is('approval-line/*')">
+                            {{ __('Approval Line') }}
+                        </x-nav-link>
+                        <x-nav-link href="{{ route('FPK Main') }}" :active="request()->routeIs('FPK Main') || request()->is('FPK/*')">
+                            {{ __(' F P K ') }}
+                        </x-nav-link>
+                    @elseif (auth()->user()->role === 'HR')
+                        <x-nav-link href="{{ route('FPK Main') }}" :active="request()->routeIs('FPK Main') || request()->is('FPK/*')">
+                            {{ __(' F P K ') }}
+                        </x-nav-link>
+                    @endif
+                    
+                    
                 </div>
             </div>
 

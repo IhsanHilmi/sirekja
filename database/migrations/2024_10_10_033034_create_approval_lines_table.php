@@ -14,15 +14,8 @@ return new class extends Migration
     {
         Schema::create('approval_lines', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_employee')->constrained('employees')->onDelete('cascade');
-            $table->ForeignIdFor(BisnisUnit::class)->constrained()->onDelete('cascade');
-            $table->foreignId('hr_unit')->nullable()->constrained('employees')->onDelete('set null');
-            $table->foreignId('direksi_1')->nullable()->constrained('employees')->onDelete('set null');
-            $table->foreignId('direksi_2')->nullable()->constrained('employees')->onDelete('set null');
-            $table->foreignId('direksi_3')->nullable()->constrained('employees')->onDelete('set null');
-            $table->foreignId('presdir')->nullable()->constrained('employees')->onDelete('set null');
-            $table->foreignId('corporate_hr')->nullable()->constrained('employees')->onDelete('set null');
-            $table->foreignId('superadmin')->nullable()->constrained('employees')->onDelete('set null');
+            $table->foreignIdFor(BisnisUnit::class)->nullable()->constrained()->onDelete('cascade');
+            $table->string("approval_line_desc")->nullable();
             $table->timestamps();
         });
     }

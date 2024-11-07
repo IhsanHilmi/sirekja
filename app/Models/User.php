@@ -66,7 +66,7 @@ class User extends Authenticatable
     }
 
     public function approvalLines() {
-        return $this->belongsToMany(ApprovalLine::class, 'approval_line_user')->withPivot('order');
+        return $this->belongsToMany(ApprovalLine::class, 'approval_line_user')->withPivot('order','approves_as');
     }
 
     public function approvalSteps() {

@@ -42,9 +42,9 @@ Route::middleware([
     Route::prefix('/FPK')->group(function () {
        Route::get('/', function () {
             return view('fpk-layout');
-       })->name('FPK Main')->middleware(RoleMiddleware::class.':Superadmin');
+       })->name('FPK Main')->middleware(RoleMiddleware::class.':Superadmin,HR');
        Route::get('/form/{cursorId?}', function (?int $cursorId = null) {
             return view('fpk-layout', ['submenu' => 'FPK Submission', 'cursorId' => $cursorId]);
-       })->name('FPK Submission')->middleware(RoleMiddleware::class.':Superadmin');
+       })->name('FPK Submission')->middleware(RoleMiddleware::class.':HR');
     });
 });

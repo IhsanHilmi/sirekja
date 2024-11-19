@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Fpk::class)->constrained()->onDelete('cascade');
             $table->enum('golongan',['01','02','03','04','05','06','24','25']);
-            $table->enum('gender', ['Laki - laki', 'Perempuan','Keduanya']);
+            $table->enum('gender', ['L', 'P','Both']);
             $table->integer('usia');
             $table->string('thn_pengalaman');
             $table->enum('pendidikan',['SMA/SMK/MA', 'DIII', 'S1', 'S2']);

@@ -15,11 +15,11 @@ return new class extends Migration
     {
         Schema::create('approval_processes', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(ApprovalLine::class)->constrained()->onDelete('cascade');
+            $table->foreignIdFor(ApprovalLine::class)->nullable()->constrained()->onDelete('cascade');
             $table->foreignIdFor(Fpk::class)->constrained()->onDelete('cascade');
             $table->integer('current_order')->default(1);
             $table->enum('approval_status', ['Approved', 'Pending/On Going', 'Rejected'])->default('Pending/On Going');
-            $table->dateTime('finished_time');
+            $table->dateTime('finished_time')->nullable()->default(null);
             $table->timestamps();
         });
     }

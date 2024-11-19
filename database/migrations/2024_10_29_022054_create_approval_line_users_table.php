@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(ApprovalLine::class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(User::class)->nullable()->constrained()->onDelete('set null');
-            $table->enum('approves_as', ['Superadmin', 'Presdir' ,'Corp. HR', 'Direksi 1', 'Direksi 2', 'Direksi 3', 'HR Unit', 'Dept. Head']);
+            $table->enum('approves_as', ['Superadmin', 'Presdir' ,'Corp. HR', 'Direksi 1', 'Direksi 2', 'Direksi 3', 'Dept. Head']);
             $table->integer('order');
             $table->timestamps();
             $table->unique(['approval_line_id', 'approves_as'], 'approval_line_user_unique');

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignIdFor(Jabatan::class)->constrained()->onDelete('cascade');
             $table->enum('jenis_FPK', ['PHK', 'Resign', 'Mutasi', 'Promosi', 'Demosi', 'Rotasi', 'New Hire']);
             $table->date('tanggal_efektif');
+            $table->foreignId('hr_unit_id')->constrained('user')->onDelete('cascade');
             $table->string('attachment')->nullable()->default(null);
             $table->timestamps();
         });

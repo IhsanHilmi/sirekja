@@ -18,4 +18,8 @@ class Jabatan extends Model
     public function employees() {
         return $this->hasMany(Employee::class, 'jabatan_id');
     }
+
+    public function fpks()  {
+        return $this->hasMany(Fpk::class, 'jabatan_id');
+    }
 }

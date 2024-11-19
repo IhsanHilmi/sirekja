@@ -65,6 +65,10 @@ class User extends Authenticatable
         ];
     }
 
+    public function Fpks() {
+        return $this->hasMany(Fpk::class,'hr_unit_id');
+    }
+
     public function approvalLines() {
         return $this->belongsToMany(ApprovalLine::class, 'approval_line_user')->withPivot('order','approves_as');
     }

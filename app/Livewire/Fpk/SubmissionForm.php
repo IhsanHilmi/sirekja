@@ -3,6 +3,7 @@
 namespace App\Livewire\Fpk;
 
 use App\Models\ApprovalLine;
+use App\Models\ApprovalProcess;
 use App\Models\BisnisUnit;
 use App\Models\Departemen;
 use App\Models\Fpk;
@@ -21,20 +22,22 @@ class SubmissionForm extends Component
 
     public $cursorId;
     public $currentFile = null;
+    public $deleteModal = false;
     public $bisnis_unit_id = "", $departemen_id = "", $jabatan_id = "";
-    public $kodeFPK, $hr_unit_id = "", $jenis_fpk = "",  $golongan = "", $in_file = null, $file_path = null, $tgl_effect = "", $usia = 0, $gender = "", $work_exp = 0, $last_edu = "", $jurusan = "", $lokasi_kerja = "", $alasan = "", $job_spec = "", $job_desc, $soft_skills = "", $hard_skills = "", $catatan = "";
+    public $kodeFPK, $hr_unit_id = "", $hr_unit_name = "", $jenis_fpk = "New Hire",  $golongan = "", $in_file = null, $file_path = null, $tgl_effect = "", $usia = 0, $gender = "Both", $work_exp = 0, $last_edu = "SMA/SMK/MA", $jurusan = "", $lokasi_kerja = "", $alasan = "", $job_spec = "", $job_desc, $soft_skills = "", $hard_skills = "", $catatan = "";
     public $bu = [], $d = [], $j = [], $f = [], $user_al = [];
 
     protected $rules = [
         'jabatan_id' => ['required', 'exists:jabatans,id'],
-        'jenis_fpk' => ['required', "in:'New Hire','Resign'"],
+        'hr_unit_id' => ['required','exists:users,id'],
+        'jenis_fpk' => ['required', "in:New Hire,Resign"],
         'tgl_effect' => ['required', 'date'],
         'in_file' => ['nullable', 'file', 'max:10240'],
         'golongan' => ['required', "regex:'0[1-6]|24|25'"],
-        'gender' => ['required', 'in:L,P,Both'],
+        'gender' => ['required', "in:L,P,Both"],
         'usia' => ['required', 'numeric','gt:16','lt:100'],
         'work_exp' => ['required', 'numeric'],
-        'last_edu' => ['required', "in:'SMA/SMK/MA','DIII','S1','S2'"],
+        'last_edu' => ['required', "in:SMA/SMK/MA,DIII,S1,S2"],
         'jurusan' => ['nullable','string'],
         'lokasi_kerja' => ['required','string'],
         'alasan' => ['nullable','string'],
@@ -47,11 +50,11 @@ class SubmissionForm extends Component
 
     public function mount($cursorId = null)
     {
+        
         $this->bu = BisnisUnit::select('id','nama_bisnis_unit')->get();
-        $this->hr_unit_id = Auth::user()->id;
-        $this->user_al = ApprovalLine::with('users')->whereHas('users',function ($query) {
-            $query->where('user_id', $this->hr_unit_id)->where('approves_as','HR Unit');
-        })->get();
+        // $this->user_al = ApprovalLine::with('users')->whereHas('users',function ($query) {
+        //     $query->where('user_id', $this->hr_unit_id)->where('approves_as','HR Unit');
+        // })->get();
 
         $this->cursorId = $cursorId;
         if($cursorId == null){
@@ -63,10 +66,18 @@ class SubmissionForm extends Component
             ->first()
             ->AUTO_INCREMENT;
             $this->kodeFPK = 'FPK-'.sprintf('%02d',$nextId);
+            $this->hr_unit_id = Auth::user()->id;
+            $this->hr_unit_name = Auth::user()->name;
         }
         else{
-            $fpk = Fpk::with('details')->find($cursorId);
+            $fpk = Fpk::with('details', 'approvalProcess', 'jabatan','issuedBy')->find($cursorId);
             $this->kodeFPK = $fpk->kodeFPK;
+            $this->hr_unit_id = $fpk->hr_unit_id;
+            $this->hr_unit_name = $fpk->issuedBy->name;
+            $this->bisnis_unit_id = $fpk->jabatan->departemen->bisnisUnit->id;
+            $this->d = Departemen::where('bisnis_unit_id',$this->bisnis_unit_id)->get();
+            $this->departemen_id = $fpk->jabatan->departemen->id;
+            $this->j = Jabatan::where('departemen_id',$this->departemen_id)->get();
             $this->jabatan_id = $fpk->jabatan_id;
             $this->jenis_fpk = $fpk->jenis_FPK;
             $this->tgl_effect = $fpk->tanggal_efektif;
@@ -100,14 +111,13 @@ class SubmissionForm extends Component
 
     public function render()
     {   
+        
         return view('livewire.fpk.submission-form');
     }
 
     public function submitFPK()
     {
-        $this->validate([
-            'kodeFPK' => $this->cursorId ? ['required', 'unique:fpks,kodeFPK,'.$this->kodeFPK, 'string'] : ['required', 'unique:fpks,kodeFPK', 'string']
-        ]);
+        
         $this->validate();
 
         if($this->in_file){
@@ -125,26 +135,36 @@ class SubmissionForm extends Component
             $fpk->jenis_FPK = $this->jenis_fpk;
             $fpk->tanggal_efektif = $this->tgl_effect;
             $fpk->attachment = $this->file_path;
-            $fpk->details->golongan = $this->golongan;
-            $fpk->details->gender = $this->gender;
-            $fpk->details->usia = $this->usia;
-            $fpk->details->thn_pengalaman = $this->work_exp;
-            $fpk->details->pendidikan = $this->last_edu;
-            $fpk->details->jurusan = $this->jurusan;
-            $fpk->details->lokasi_kerja = $this->lokasi_kerja;
-            $fpk->details->alasan = $this->alasan;
-            $fpk->details->spesifikasi = $this->job_spec;
-            $fpk->details->deskripsi = $this->job_desc;
-            $fpk->details->hard_skills = $this->hard_skills;
-            $fpk->details->soft_skills = $this->soft_skills;
-            $fpk->details->catatan = $this->catatan;
+            $fpk_details = $fpk->details;
+            $fpk_details->golongan = $this->golongan;
+            $fpk_details->gender = $this->gender;
+            $fpk_details->usia = $this->usia;
+            $fpk_details->thn_pengalaman = $this->work_exp;
+            $fpk_details->pendidikan = $this->last_edu;
+            $fpk_details->jurusan = $this->jurusan;
+            $fpk_details->lokasi_kerja = $this->lokasi_kerja;
+            $fpk_details->alasan = $this->alasan;
+            $fpk_details->spesifikasi = $this->job_spec;
+            $fpk_details->deskripsi = $this->job_desc;
+            $fpk_details->hard_skills = $this->hard_skills;
+            $fpk_details->soft_skills = $this->soft_skills;
+            $fpk_details->catatan = $this->catatan;
+            $fpk_details->save();
+
+            $ap = ApprovalProcess::where('fpk_id',$fpk->id)->get()->first();
+            $ap->delete();
+            
         }
         else{
+            $this->validate([
+                'kodeFPK' => ['required', 'unique:fpks,kodeFPK', 'string']
+            ]);
             $fpk = Fpk::create([
                 'kodeFPK' => $this->kodeFPK,
                 'jabatan_id' => $this->jabatan_id,
                 'jenis_FPK' => $this->jenis_fpk,
                 'tanggal_efektif' => $this->tgl_effect,
+                'hr_unit_id' => $this->hr_unit_id,
                 'attachment' => $this->file_path
             ]);
             $fpk->details()->create([
@@ -163,7 +183,7 @@ class SubmissionForm extends Component
                 'catatan' => $this->catatan
             ]);
         }
-        
         return redirect()->route('FPK Main');
     }
+
 }

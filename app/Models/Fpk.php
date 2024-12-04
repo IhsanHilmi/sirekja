@@ -12,7 +12,7 @@ class Fpk extends Model
     protected $fillable = ['kodeFPK','jabatan_id','jenis_FPK','tanggal_efektif', 'hr_unit_id' ,'attachment'];
 
     public function issuedBy() {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'hr_unit_id');
     }
 
     public function jabatan() {

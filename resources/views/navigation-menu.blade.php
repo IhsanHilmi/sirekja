@@ -16,23 +16,44 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    @if (auth()->user()->role === 'Superadmin')
-                        <x-nav-link href="{{ route('company') }}" :active="request()->routeIs('company')">
-                            {{ __('Company') }}
+                    {{-- Navbar for Candidate --}}
+                    @if (auth()->user()->role === 'Kandidat')
+                        <x-nav-link href="">
+                            {{ __('Biodata') }}
                         </x-nav-link>
-                        <x-nav-link href="{{ route('employee') }}" :active="request()->routeIs('employee') || request()->is('employee/*')">
-                            {{ __('Employee') }}
+                        <x-nav-link href="">
+                            {{ __('Dokumen Pelengkap') }}
                         </x-nav-link>
-                        <x-nav-link href="{{ route('approval line') }}" :active="request()->routeIs('approval line') || request()->is('approval-line/*')">
-                            {{ __('Approval Line') }}
-                        </x-nav-link>
+                    {{-- Navbar for Candidate --}}
+                    @else
+
+                        {{-- Navbar for Superadmin --}}
+                        @if (auth()->user()->role === 'Superadmin')
+                            <x-nav-link href="{{ route('company') }}" :active="request()->routeIs('company') || request()->is('company/*')">
+                                {{ __('Company') }}
+                            </x-nav-link>
+                            <x-nav-link href="{{ route('employee') }}" :active="request()->routeIs('employee') || request()->is('employee/*')">
+                                {{ __('Employee') }}
+                            </x-nav-link>
+                            <x-nav-link href="{{ route('approval line') }}" :active="request()->routeIs('approval line') || request()->is('approval-line/*')">
+                                {{ __('Approval Line') }}
+                            </x-nav-link>
+                        {{-- Navbar for Superadmin --}}
+                        {{-- Navbar for HR--}}
+                        @elseif (auth()->user()->role === 'HR')
+                        {{-- Navbar for Employee--}}
+                            <x-nav-link href="">
+                                {{ __(' Hiring Vacancies ') }}
+                            </x-nav-link>
+                        @endif
+                        {{-- Navbar for All--}}
                         <x-nav-link href="{{ route('FPK Main') }}" :active="request()->routeIs('FPK Main') || request()->is('FPK/*')">
                             {{ __(' F P K ') }}
                         </x-nav-link>
-                    @elseif (auth()->user()->role === 'HR')
-                        <x-nav-link href="{{ route('FPK Main') }}" :active="request()->routeIs('FPK Main') || request()->is('FPK/*')">
-                            {{ __(' F P K ') }}
+                        <x-nav-link href="">
+                            {{ __(' H C ') }}
                         </x-nav-link>
+                        {{-- Navbar for All--}}
                     @endif
                     
                     
@@ -101,12 +122,49 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
+            <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link href="{{ route('company') }}" :active="request()->routeIs('company')">
-                {{ __('Company') }}
-            </x-responsive-nav-link>
+            </x-nav-link>
+
+            {{-- Navbar for Candidate --}}
+            @if (auth()->user()->role === 'Kandidat')
+                <x-nav-link href="">
+                    {{ __('Biodata') }}
+                </x-nav-link>
+                <x-nav-link href="">
+                    {{ __('Dokumen Pelengkap') }}
+                </x-nav-link>
+            {{-- Navbar for Candidate --}}
+            @else
+
+                {{-- Navbar for Superadmin --}}
+                @if (auth()->user()->role === 'Superadmin')
+                    <x-responsive-nav-link href="{{ route('company') }}" :active="request()->routeIs('company') || request()->is('company/*')">
+                        {{ __('Company') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link href="{{ route('employee') }}" :active="request()->routeIs('employee') || request()->is('employee/*')">
+                        {{ __('Employee') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link href="{{ route('approval line') }}" :active="request()->routeIs('approval line') || request()->is('approval-line/*')">
+                        {{ __('Approval Line') }}
+                    </x-responsive-nav-link>
+                {{-- Navbar for Superadmin --}}
+                {{-- Navbar for HR--}}
+                @elseif (auth()->user()->role === 'HR')
+                {{-- Navbar for Employee--}}
+                    <x-responsive-nav-link href="">
+                        {{ __(' Hiring Vacancies ') }}
+                    </x-responsive-nav-link>
+                @endif
+                {{-- Navbar for All--}}
+                <x-responsive-nav-link href="{{ route('FPK Main') }}" :active="request()->routeIs('FPK Main') || request()->is('FPK/*')">
+                    {{ __(' F P K ') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link href="">
+                    {{ __(' H C ') }}
+                </x-responsive-nav-link>
+                {{-- Navbar for All--}}
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->

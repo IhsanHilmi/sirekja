@@ -10,7 +10,6 @@
                 <tr>
                     <th class="w-1/12 py-3 px-4 text-center">ID</th>
                     <th class="w-1/12 py-3 px-4 text-center">Bisnis Unit</th>
-                    <th class="w-1/12 py-3 px-4 text-center">HR Unit</th>
                     <th class="w-1/12 py-3 px-4 text-center">Department Head</th>
                     <th class="w-1/12 py-3 px-4 text-center">Direksi 1</th>
                     <th class="w-1/12 py-3 px-4 text-center">Direksi 2</th>
@@ -26,7 +25,6 @@
                     <tr class="border-b border-gray-200 hover:bg-gray-300" wire:key='{{$al->id}}'>
                         <td class="py-3 px-4">AL-{{ $al->id }}</td>
                         <td class="py-3 px-4">{{ $al->bisnisUnit->nama_bisnis_unit }}</td>
-                        <td class="py-3 px-4">{{ $al->users()->wherePivot('approves_as','HR Unit')->first() ? $al->users()->wherePivot('approves_as','HR Unit')->first()->name : __('Tidak Dibutuhkan')}}</td>
                         <td class="py-3 px-4">{{ $al->users()->wherePivot('approves_as','Dept. Head')->first() ? $al->users()->wherePivot('approves_as','Dept. Head')->first()->name : __('Tidak Dibutuhkan')}}</td>
                         <td class="py-3 px-4">{{ $al->users()->wherePivot('approves_as','Direksi 1')->first() ? $al->users()->wherePivot('approves_as','Direksi 1')->first()->name : __('Tidak Dibutuhkan')}}</td>
                         <td class="py-3 px-4">{{ $al->users()->wherePivot('approves_as','Direksi 2')->first() ? $al->users()->wherePivot('approves_as','Direksi 2')->first()->name : __('Tidak Dibutuhkan')}}</td>
@@ -87,16 +85,6 @@
                 <x-label for="approval_line_desc" value="{{ __('Deskripsi Singkat Approval Line') }}" />
                 <x-input id="approval_line_desc" class="block mt-1 w-full" type="text" name="approval_line_desc" wire:model.change="approval_line_desc" required class="block mt-1 w-full mb-4 border-gray-700 bg-gray-200 text-gray-900 focus:border-indigo-600 focus:ring-indigo-600 rounded-md shadow-sm"/>
                 <x-input-error for="approval_line_desc" class="mt-2" />
-            </div>
-            <div class="mt-4">
-                <x-label for="hr_unit_id" value="{{ __('HR Unit') }}" />
-                <select id="hr_unit_id" name="hr_unit_id" wire:model.change="hr_unit_id" required class="block mt-1 w-full mb-4 border-gray-700 bg-gray-200 text-gray-900 focus:border-indigo-600 focus:ring-indigo-600 rounded-md shadow-sm">
-                    <option value="">HR Unit</option>
-                    @foreach($allUser->where('role','HR') as $employee)
-                        <option @selected($employee->id == $hr_unit_id) value="{{$employee->id}}" wire:key='{{$employee->id}}'>{{$employee->name}}</option>
-                    @endforeach
-                </select>    
-                <x-input-error for="hr_unit_id" class="mt-2" />
             </div>
             <div class="mt-4">
                 <x-label for="dept_head_id" value="{{ __('Department Head') }}" />

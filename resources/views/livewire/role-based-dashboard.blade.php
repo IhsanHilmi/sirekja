@@ -47,7 +47,7 @@
     @elseif($loggedUser->role == "HR")
         {{-- FPK Menu --}}
         <x-card-menu>
-            <x-slot:url>#</x-slot>
+            <x-slot:url>{{route('FPK Main')}}</x-slot>
             <x-slot:icon>fa-solid fa-file-contract</x-slot>
                 Form Permintaan Karyawan
         </x-card-menu>
@@ -85,7 +85,7 @@
     @else
         {{-- FPK Approval --}}
         <x-card-menu>
-            <x-slot:url>#</x-slot>
+            <x-slot:url>{{route('FPK Main')}}</x-slot>
             <x-slot:icon>fa-solid fa-file-circle-check</x-slot>
                 FPK Approval
         </x-card-menu>

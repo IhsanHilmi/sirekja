@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ApprovalStep extends Model
 {
+    protected $fillable = ['approval_process_id', 'user_id', 'approves_as', 'approval_stat', 'order', 'finished_time'];
     use HasFactory;
 
     public function approvalProcess() {

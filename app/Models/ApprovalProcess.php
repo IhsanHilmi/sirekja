@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ApprovalProcess extends Model
 {
+    protected $fillable = ['approval_line_id', 'fpk_id', 'current_order', 'approval_status', 'finished_time'];
     use HasFactory;
 
     public function fpk() {

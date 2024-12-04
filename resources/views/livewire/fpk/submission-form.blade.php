@@ -1,5 +1,5 @@
-<div>
-    <h2 class="font-semibold text-l text-gray-800 leading-tight">
+<div class="bg-gray-800">
+    <h2 class="font-semibold text-l text-white leading-tight">
         @isset($cursorId)
             {{__("Update Form Permintaan Karyawan")}}
         @else
@@ -14,8 +14,10 @@
         </div>
         <div class="mt-4">
             <x-label for="hr_unit_name" value="{{ __('HR Unit') }}" />
-            <x-input id="hr_unit_name" class=" bg-neutral-400 dark:focus:border-red-500 focus:border-red-500 dark:focus:ring-red-500 focus:ring-red-500" name="hr_unit_name" type="text" readonly value="{{auth()->user()->name}}"/>
+            <x-input id="hr_unit_name" wire:model='hr_unit_name' class=" bg-neutral-400 dark:focus:border-red-500 focus:border-red-500 dark:focus:ring-red-500 focus:ring-red-500" name="hr_unit_name" type="text" readonly/>
+            <x-input type='hidden' id="hr_unit_id" name="hr_unit_id" wire:model='hr_unit_id' />
         </div>
+        
         <div class="mt-4 pb-4 w-5/6 col-span-2">
             <x-label class="text-black" for="jenis_fpk" value="{{ __('Permintaan Untuk :') }}" />
             <select id="jenis_fpk" name="jenis_fpk" wire:model.change="jenis_fpk" class="block mt-1 w-full mb-4 border-gray-700 bg-gray-200 text-gray-900 focus:border-indigo-600 focus:ring-indigo-600 rounded-md shadow-sm">

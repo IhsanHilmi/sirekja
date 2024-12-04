@@ -322,7 +322,7 @@ class EmployeeSeeder extends Seeder
                 "id" => 15,
                 "name" => "CorporateHR",
                 "email" => "CorporateHR@jababeka.com",
-                "role" => "HR",
+                "role" => "Employee",
                 "employee_id" => 15,
                 "password" => Hash::make("CorporateHR"),
                 "created_at" => now(),

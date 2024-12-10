@@ -1,11 +1,12 @@
 <?php
 
+use App\Http\Middleware\CheckUserSignature;
 use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // Menggunakan Auth bawaan dari template Laravel Jetstream
-Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified',])->group(function () {
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified',CheckUserSignature::class])->group(function () {
     Route::get('/', function () {
         return view('dashboard');
     })->name('dashboard');
@@ -44,6 +45,18 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified',]
        Route::get('/form/{cursorId?}', function (?int $cursorId = null) {
             return view('fpk-layout', ['submenu' => 'FPK Submission', 'cursorId' => $cursorId]);
        })->name('FPK Submission')->middleware(RoleMiddleware::class.':HR'); // Hanya HR Unit yang boleh mengajukan, mengedit, dan menghapus FPK
+
+       Route::get('/print/{id}', function ($id) {
+            return view('layouts.fpk-print', ['id' => $id]);
+       })->name('Print FPK');
     });
 
+    Route::get('/cek-signature', function () {
+        return view('signature_test');
+    });
+    
+    
+
 });
+
+

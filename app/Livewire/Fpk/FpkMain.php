@@ -7,10 +7,10 @@ use App\Models\ApprovalProcess;
 use App\Models\ApprovalStep;
 use App\Models\Fpk;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Barryvdh\Snappy\Facades\SnappyPdf;
 
 class FpkMain extends Component
 {
@@ -32,10 +32,14 @@ class FpkMain extends Component
     public function render()
     {   
         $current_user_id = Auth::user()->id;
+        $fpk_without_approval = [];
         $fpks = Fpk::with('details','approvalProcess','jabatan','issuedBy')->whereHas('approvalProcess.approvalSteps', function ($query) use ($current_user_id) {
             $query->where('user_id', $current_user_id);            
         })->orWhere('hr_unit_id', $current_user_id)->paginate(10);
-        return view('livewire.fpk.fpk-main',['fpks' => $fpks]);
+        if(Auth::user()->role === 'Superadmin'){
+            $fpk_without_approval = Fpk::with('details','approvalProcess','jabatan','issuedBy')->doesntHave('approvalProcess')->paginate(10);
+        }
+        return view('livewire.fpk.fpk-main',['fpks' => $fpks, 'fpks_no_al' => $fpk_without_approval]);
     }
     
     // Redirect ke form Tambah / Edit FPK
@@ -116,7 +120,7 @@ class FpkMain extends Component
         $fpk = Fpk::with('details','approvalProcess','jabatan','issuedBy')->find($id);
         $this->hr_unit_id = $fpk->issuedBy->id;
         $bisnis_unit_id = $fpk->jabatan->departemen->bisnisUnit->id;
-        $steps = $fpk->approvalProcess->approvalSteps;
+        $steps = optional($fpk->approvalProcess)->approvalSteps ?? [];
         foreach ($steps as $step) {
             if(isset($step->user)){
                 switch($step->approves_as){
@@ -319,5 +323,7 @@ class FpkMain extends Component
         $this->cursorId = null;
     }
 
-    
+    public function printFPK($id) {
+        return redirect()->route('Print FPK', ['id' => $id]);
+    }
 }

@@ -16,10 +16,27 @@
                     <th class="w-auto py-3 px-4 text-center">Jabatan</th>
                     <th class="w-1/12 py-3 px-4 text-center">Pengaju</th>
                     <th class="w-1/12 py-3 px-4 text-center">Status Approval</th>
-                    <th colspan="4" class="w-auto py-3 px-4 text-center justify-between">Action</th>
+                    <th colspan="5" class="w-auto py-3 px-4 text-center justify-between">Action</th>
                 </tr>
             </thead>
             <tbody class="text-gray-700">
+                
+                @foreach ($fpks_no_al as $fpk)
+                <tr class="border-b border-gray-200 hover:bg-gray-300" wire:key='{{$fpk->id}}'>
+                    <td class="py-3 px-4">{{ $loop->iteration }}</td>
+                    <td class="py-3 px-4">{{ $fpk->kodeFPK }}</td>
+                    <td class="py-3 px-4">{{ $fpk->jenis_FPK }}</td>
+                    <td class="py-3 px-4">{{ $fpk->jabatan->nama_jabatan }}</td>
+                    <td class="py-3 px-4">{{ $fpk->issuedBy->name }}</td>
+                    <td class="py-3 px-4">
+                        {{__('Approval Line belum ditentukan')}}                       
+                    </td>
+                    <td class="py-3 px-4"><x-button color="bg-sky-500" wire:click='openDetails({{$fpk->id}})'><i class="fa-solid fa-circle-info font-extrabold pr-1"></i>Detail</x-button></td>
+                    <td class="py-3 px-4 w-auto">
+                        <x-button wire:click='openApprovalProcessModal({{$fpk->id}})'><i class="fa-solid fa-clipboard-list font-extrabold pr-1"></i>Set/Edit Approval Line</x-button>
+                    </td>                       
+                </tr>
+                @endforeach
                 @foreach ($fpks as $fpk)
                     <tr class="border-b border-gray-200 hover:bg-gray-300" wire:key='{{$fpk->id}}'>
                         <td class="py-3 px-4">{{ $loop->iteration }}</td>
@@ -49,7 +66,7 @@
                                 <x-danger-button wire:click='openDeleteModal({{$fpk->id}})'><i class="fa-solid fa-trash-can font-extrabold pr-1"></i>Delete FPK</x-danger-button>
                             </td>
                         @elseif(auth()->user()->role == 'Superadmin')
-                            <td class="py-3 px-4 w-auto">
+                            <td colspan="2" class="py-3 px-4 w-auto">
                                 <x-button wire:click='openApprovalProcessModal({{$fpk->id}})'><i class="fa-solid fa-clipboard-list font-extrabold pr-1"></i>Set/Edit Approval Line</x-button>
                             </td>
                         @endif
@@ -57,7 +74,13 @@
                             <td class="py-3 px-4 w-1/3">
                                 <x-button wire:click='openApproveModal({{$fpk->id}})'><i class="fa-solid fa-stamp font-extrabold pr-1"></i>Give Approval</x-button>
                             </td>
-                        @endif                        
+                            @if($fpk->approvalProcess->approval_status == 'Approved')
+                                <td class="py-3 px-4 w-1/3">
+                                    <x-button onclick="printFPK({{$fpk->id}})"><i class="fa-solid fa-print font-extrabold pr-1"></i>Print FPK</x-button>
+                                </td>
+                            @endif 
+                        @endif
+                                                
                     </tr>
                 @endforeach
             </tbody>
@@ -310,4 +333,10 @@
             </x-secondary-button>
         </x-slot>
     </x-dialog-modal>
+
+    <script>
+        function printFPK(id) {
+            window.open("/FPK/print/"+id, "_blank");
+        }
+    </script>
 </div>

@@ -219,6 +219,16 @@
 
 </body>
 <script>
-    window.print();
+    this.window.onload = function() {
+    // Show the print popup
+    this.window.print();
+
+    // Add a small delay before closing the page to ensure print dialog is shown
+    setTimeout(() => {
+        this.window.close();
+    }, 100);
+
+    
+};
 </script>
 </html>
